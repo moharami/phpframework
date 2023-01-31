@@ -1,0 +1,15 @@
+{
+  "name": "amir/phpframework",
+  "autoload": {
+    "psr-4": {
+      "app\\": "./"
+    }
+  },
+  "authors": [
+    {
+      "name": "amir",
+      "email": "a.moharami@gmail.com"
+    }
+  ],
+  "require": {}
+}

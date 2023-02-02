@@ -28,7 +28,7 @@ class Router
             echo 'Not Found';
             exit;
         }
-        if (is_string($callback)){
+        if (is_string($callback)) {
             return $this->renderView($callback);
         }
         echo call_user_func($callback);
@@ -36,8 +36,24 @@ class Router
 
     private function renderView($view)
     {
-        $path = __DIR__ . "/../views/$view.php";
-        include_once $path;
+        $layoutContent = $this->layoutContent();
+        $ViewContent = $this->renderOnlyView($view);
+        return str_replace('{{content}}', $ViewContent, $layoutContent);
     }
+
+    protected function layoutContent()
+    {
+        ob_start();
+        include_once Application::$RootDir . "/views/layouts/main.php";
+        return ob_get_clean();
+    }
+
+    protected function renderOnlyView($view)
+    {
+        ob_start();
+        include_once Application::$RootDir . "/views/$view.php";
+        return ob_get_clean();
+    }
+
 }
 

@@ -32,10 +32,14 @@ class Router
             return $this->renderView($callback);
         }
 
-        echo call_user_func($callback);
+        if (is_array($callback)) {
+            $callback[0] = new $callback[0];
+        }
+
+        echo call_user_func($callback, $this->request);
     }
 
-    public function renderView($view, $params=[])
+    public function renderView($view, $params = [])
     {
         $layoutContent = $this->layoutContent();
         $ViewContent = $this->renderOnlyView($view, $params);
@@ -60,6 +64,7 @@ class Router
         foreach ($params as $key => $value) {
             $$key = $value;
         }
+
         ob_start();
         include_once Application::$RootDir . "/views/$view.php";
         return ob_get_clean();

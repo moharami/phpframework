@@ -23,7 +23,7 @@ class Router
     {
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
-        $callback = $this->routes['get'][$path] ?? false;
+        $callback = $this->routes[$method][$path] ?? false;
         if ($callback === false) {
             $this->response->setStatusCode(404);
             return $this->renderView(404);
@@ -31,13 +31,14 @@ class Router
         if (is_string($callback)) {
             return $this->renderView($callback);
         }
+
         echo call_user_func($callback);
     }
 
-    private function renderView($view)
+    public function renderView($view, $params=[])
     {
         $layoutContent = $this->layoutContent();
-        $ViewContent = $this->renderOnlyView($view);
+        $ViewContent = $this->renderOnlyView($view, $params);
         return str_replace('{{content}}', $ViewContent, $layoutContent);
     }
 
@@ -54,8 +55,11 @@ class Router
         return ob_get_clean();
     }
 
-    protected function renderOnlyView($view)
+    protected function renderOnlyView($view, $params = [])
     {
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
         ob_start();
         include_once Application::$RootDir . "/views/$view.php";
         return ob_get_clean();
